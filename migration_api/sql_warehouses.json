@@ -1,0 +1,156 @@
+[
+    {
+        "id": "d082a7733e60bf4c",
+        "name": "Serverless Starter Warehouse",
+        "size": "SMALL",
+        "cluster_size": "Small",
+        "min_num_clusters": 1,
+        "max_num_clusters": 1,
+        "auto_stop_mins": 10,
+        "auto_resume": true,
+        "creator_name": "manny.kang@anker-in.com",
+        "creator_id": 2632309446521737,
+        "tags": {},
+        "spot_instance_policy": "COST_OPTIMIZED",
+        "enable_photon": true,
+        "enable_serverless_compute": true,
+        "warehouse_type": "PRO",
+        "num_clusters": 0,
+        "num_active_sessions": 0,
+        "state": "STOPPED",
+        "jdbc_url": "jdbc:spark://dbc-1c15bce2-47da.cloud.databricks.com:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/d082a7733e60bf4c;",
+        "odbc_params": {
+            "hostname": "dbc-1c15bce2-47da.cloud.databricks.com",
+            "path": "/sql/1.0/warehouses/d082a7733e60bf4c",
+            "protocol": "https",
+            "port": 443
+        }
+    },
+    {
+        "id": "13a154cc4f233c90",
+        "name": "sql-02",
+        "size": "XXSMALL",
+        "cluster_size": "2X-Small",
+        "min_num_clusters": 1,
+        "max_num_clusters": 1,
+        "auto_stop_mins": 5,
+        "auto_resume": true,
+        "creator_name": "tim.lian.ms@anker.io",
+        "creator_id": 1282330848027099,
+        "tags": {},
+        "spot_instance_policy": "COST_OPTIMIZED",
+        "enable_photon": true,
+        "channel": {
+            "name": "CHANNEL_NAME_CURRENT"
+        },
+        "enable_serverless_compute": true,
+        "warehouse_type": "PRO",
+        "num_clusters": 0,
+        "num_active_sessions": 0,
+        "state": "STOPPED",
+        "jdbc_url": "jdbc:spark://dbc-1c15bce2-47da.cloud.databricks.com:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/13a154cc4f233c90;",
+        "odbc_params": {
+            "hostname": "dbc-1c15bce2-47da.cloud.databricks.com",
+            "path": "/sql/1.0/warehouses/13a154cc4f233c90",
+            "protocol": "https",
+            "port": 443
+        }
+    },
+    {
+        "id": "3d61a4d05f9990a5",
+        "name": "sqlwarehouse-01",
+        "size": "XXSMALL",
+        "cluster_size": "2X-Small",
+        "min_num_clusters": 1,
+        "max_num_clusters": 1,
+        "auto_stop_mins": 10,
+        "auto_resume": true,
+        "creator_name": "tim.lian.ms@anker.io",
+        "creator_id": 1282330848027099,
+        "tags": {},
+        "spot_instance_policy": "COST_OPTIMIZED",
+        "enable_photon": true,
+        "channel": {
+            "name": "CHANNEL_NAME_CURRENT"
+        },
+        "enable_serverless_compute": true,
+        "warehouse_type": "PRO",
+        "num_clusters": 0,
+        "num_active_sessions": 0,
+        "state": "STOPPED",
+        "jdbc_url": "jdbc:spark://dbc-1c15bce2-47da.cloud.databricks.com:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/3d61a4d05f9990a5;",
+        "odbc_params": {
+            "hostname": "dbc-1c15bce2-47da.cloud.databricks.com",
+            "path": "/sql/1.0/warehouses/3d61a4d05f9990a5",
+            "protocol": "https",
+            "port": 443
+        }
+    },
+    {
+        "id": "40c71bf13fe21bf3",
+        "name": "TEST",
+        "size": "XXSMALL",
+        "cluster_size": "2X-Small",
+        "min_num_clusters": 1,
+        "max_num_clusters": 1,
+        "auto_stop_mins": 45,
+        "auto_resume": true,
+        "creator_name": "lion.wang@anker.com",
+        "creator_id": 5507398074081744,
+        "tags": {
+            "custom_tags": [
+                {
+                    "key": "Project",
+                    "value": "DW"
+                }
+            ]
+        },
+        "spot_instance_policy": "COST_OPTIMIZED",
+        "enable_photon": true,
+        "channel": {
+            "name": "CHANNEL_NAME_CURRENT"
+        },
+        "enable_serverless_compute": false,
+        "warehouse_type": "PRO",
+        "num_clusters": 0,
+        "num_active_sessions": 0,
+        "state": "STOPPED",
+        "jdbc_url": "jdbc:spark://dbc-1c15bce2-47da.cloud.databricks.com:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/40c71bf13fe21bf3;",
+        "odbc_params": {
+            "hostname": "dbc-1c15bce2-47da.cloud.databricks.com",
+            "path": "/sql/1.0/warehouses/40c71bf13fe21bf3",
+            "protocol": "https",
+            "port": 443
+        }
+    },
+    {
+        "id": "214857d9937744f8",
+        "name": "TEST_CLASSIC",
+        "size": "XLARGE",
+        "cluster_size": "X-Large",
+        "min_num_clusters": 1,
+        "max_num_clusters": 1,
+        "auto_stop_mins": 45,
+        "auto_resume": true,
+        "creator_name": "lion.wang@anker.com",
+        "creator_id": 5507398074081744,
+        "tags": {},
+        "spot_instance_policy": "COST_OPTIMIZED",
+        "enable_photon": true,
+        "channel": {
+            "name": "CHANNEL_NAME_CURRENT"
+        },
+        "enable_serverless_compute": false,
+        "warehouse_type": "CLASSIC",
+        "num_clusters": 0,
+        "num_active_sessions": 0,
+        "state": "STOPPED",
+        "jdbc_url": "jdbc:spark://dbc-1c15bce2-47da.cloud.databricks.com:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/214857d9937744f8;",
+        "odbc_params": {
+            "hostname": "dbc-1c15bce2-47da.cloud.databricks.com",
+            "path": "/sql/1.0/warehouses/214857d9937744f8",
+            "protocol": "https",
+            "port": 443
+        }
+    }
+]

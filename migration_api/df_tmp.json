@@ -1,0 +1,38 @@
+{
+    "object_id": "/pipelines/d3a30d19-aa41-409c-95ac-84c76f51d9fc",
+    "object_type": "pipelines",
+    "access_control_list": [
+        {
+            "user_name": "lion.wang@anker.com",
+            "display_name": "Lion Wang",
+            "all_permissions": [
+                {
+                    "permission_level": "CAN_MANAGE",
+                    "inherited": false
+                }
+            ]
+        },
+        {
+            "user_name": "tim.lian.ms@anker.io",
+            "display_name": "tim.lian ms",
+            "all_permissions": [
+                {
+                    "permission_level": "IS_OWNER",
+                    "inherited": false
+                }
+            ]
+        },
+        {
+            "group_name": "admins",
+            "all_permissions": [
+                {
+                    "permission_level": "CAN_MANAGE",
+                    "inherited": true,
+                    "inherited_from_object": [
+                        "/pipelines/"
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,151 @@
+import re
+import fileinput
+import os
+import json
+import requests
+
+log_directory = "/home/ankeruser/aws/aws_workspace_config/try1/"  
+#file_path = 'C:\\work\\log\\jobs.log'
+databricks_domain = ""
+access_token = ""
+_databricks_domain_target = ""
+_access_token_target = ""
+script_dir = os.path.dirname(os.path.abspath(__file__))
+#file_path = os.path.join(script_dir, 'config.txt')
+
+file_path ="/home/ankeruser/aws/migration_api/config.txt"
+with open(file_path, 'r') as file:
+    # 读取所有行到一个列表中
+    config_lines = file.readlines()
+    for line in config_lines:
+        parts = line.strip().split('=', 1)
+        if len(parts) == 2:
+            key, value = parts
+            key = key.strip()
+            value = value.strip()
+            if key == 'databricks_domain':
+                databricks_domain = value   
+            if key == 'access_token':
+                access_token = value
+            if key == 'target_databricks_domain':
+                _databricks_domain_target = value   
+            if key == 'target_access_token':
+                _access_token_target = value
+                break  
+    
+# change attribute from aws to azure                
+def translate_instance_pool_attributes_toazure(log_dir):
+    # log files to adapt instance pools attributes
+    logs_to_update = ["instance_pools.log", "jobs.log","clusters.log","cluster_policies.log"]
+      # log files to adapt instance pools attributes
+    for logfile in logs_to_update:
+        with fileinput.FileInput(log_dir + logfile, inplace=True) as fp:
+            for line in fp:
+                line = line.replace("aws_attributes", "azure_attributes")
+                # remove Azure suffix
+                line = line.replace("_AWS", "")
+                # adapt spot bid price configuration to AWS syntax with 
+                # default value of 100%
+                line = re.sub(
+                    '"spot_bid_max_price": -?\d*\.?\d*',
+                    '"spot_bid_price_percent": 100',
+                    line,
+                )
+                # update log file with new values
+                print(line, end="")      
+
+def translate_cluster_id_toazure(log_dir,key_value_pairs):      
+    logs_to_update = ["jobs.log"]
+      # log files to adapt instance pools attributes
+    for logfile in logs_to_update:
+        with fileinput.FileInput(log_dir + logfile, inplace=True) as fp:
+            for line in fp:
+                for old, new in key_value_pairs.items():
+                    line = line.replace(old, new)
+                # update log file with new values
+                print(line, end="")     
+#get querynewid
+def get_querynewid_byoldname(databricks_domain,access_token,oldname):
+    api_version = "2.0"
+    _databricks_domain = databricks_domain
+    _access_token = access_token
+    sqlwarehouse_newid =""
+    headers = {
+    "Authorization": f"Bearer {_access_token}",
+    "Content-Type": "application/json"}
+    init_flag = False
+    # 构建 GET API请求URL
+    url = f"{_databricks_domain}/api/{api_version}/sql/queries"
+    while True:
+        if init_flag:
+            response = requests.get(url, headers=headers, params={'page_token':data.get('next_page_token')})
+        else:
+            response = requests.get(url, headers=headers)
+        data = response.json()
+        init_flag=True
+        # 检查响应状态码
+        if response.status_code == 200 and data.get('results') != '' and data.get('results') != None:
+            contents = data["results"]
+            for con in contents:
+                if con['display_name'] == oldname:
+                    sqlwarehouse_newid = con["id"]             
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+
+        if data.get('next_page_token') == None or data.get('next_page_token') == '':
+            break
+    return sqlwarehouse_newid  
+def get_queryname_byoldid(databricks_domain,access_token,oldid):
+    api_version = "2.0"
+    _databricks_domain = databricks_domain
+    _access_token = access_token
+    query_oldname =""
+    headers = {
+    "Authorization": f"Bearer {_access_token}",
+    "Content-Type": "application/json"}
+    # 构建 GET API请求URL
+    url = f"{_databricks_domain}/api/{api_version}/sql/queries/{oldid}"
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    if response.status_code == 200 :
+            query_oldname=data['display_name']                  
+    else:
+         print(f"Error: {response.status_code} - {response.text}")  
+    return query_oldname  
+
+ 
+key_value_pairs = {}
+file_path = log_directory + "jobs.log"
+with open(file_path, 'r') as file:
+    json_objects = file.read().strip().split('\n')
+    for json_str in json_objects:
+        try:
+            json_data = json.loads(json_str)
+            _oldname=""
+            _newid =""
+            if 'settings' in json_data and 'tasks' in json_data['settings']:
+                #print('a')
+                for task in json_data['settings']['tasks']:
+                    #print('b',task)
+                    if  task.get('sql_task') is not None:
+                        #print('',task)
+                        if 'query' in task.get('sql_task'):
+                            warehouse_id = task.get('sql_task').get('query').get('query_id')
+                            if len(warehouse_id)>1:
+                                _oldname=get_queryname_byoldid(databricks_domain=databricks_domain,access_token=access_token,oldid=warehouse_id)
+                                #print(_oldname)
+                                _newid=get_querynewid_byoldname(databricks_domain=_databricks_domain_target,access_token=_access_token_target,oldname=_oldname)
+                                #print(_newid)
+                                key_value_pairs[warehouse_id] = _newid
+           # if 'settings' in json_data and 'sql_task' in json_data['settings'] and 'query' in json_data['settings']['sql_task']:
+                #query_id = json_data['settings']['sql_task']['query']['query_id']
+                #print(query_id)
+                #if len(query_id)>1:
+                #    _oldname=get_queryname_byoldid(databricks_domain=databricks_domain,access_token=access_token,oldid=query_id)  
+                #    _newid=get_querynewid_byoldname(databricks_domain=_databricks_domain_target,access_token=_access_token_target,oldname=_oldname)     
+                #    key_value_pairs[query_id] = _newid
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+#print(key_value_pairs)    
+translate_cluster_id_toazure(log_directory,key_value_pairs)
+ 

@@ -1,0 +1,28 @@
+[
+    {
+        "name": "vecorsearch-02",
+        "creator": "tim.lian.ms@anker.io",
+        "creation_timestamp": 1733822059892,
+        "last_updated_timestamp": 1733822059892,
+        "endpoint_type": "STANDARD",
+        "last_updated_user": "tim.lian.ms@anker.io",
+        "id": "0bbdace9-8a88-429e-bba2-917dda4a868b",
+        "endpoint_status": {
+            "state": "ONLINE"
+        },
+        "num_indexes": 0
+    },
+    {
+        "name": "vecorsearch-01",
+        "creator": "tim.lian.ms@anker.io",
+        "creation_timestamp": 1726642506084,
+        "last_updated_timestamp": 1726642506084,
+        "endpoint_type": "STANDARD",
+        "last_updated_user": "tim.lian.ms@anker.io",
+        "id": "650094fd-ef75-41fd-9fa2-334a52aab296",
+        "endpoint_status": {
+            "state": "ONLINE"
+        },
+        "num_indexes": 0
+    }
+]

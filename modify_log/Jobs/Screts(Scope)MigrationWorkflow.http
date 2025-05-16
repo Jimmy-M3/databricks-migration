@@ -1,0 +1,4 @@
+### List All Scopes
+GET {{old.HOST}}/api/2.0/secrets/scopes/list
+Authorization: {{old.TOKEN}}
+###

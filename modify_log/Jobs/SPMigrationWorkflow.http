@@ -1,0 +1,31 @@
+### List all SPs
+GET {{old.HOST}}/api/2.0/preview/scim/v2/ServicePrincipals
+Authorization: {{old.TOKEN}}
+
+
+### Single SP Detail
+GET {{old.HOST}}/api/2.0/preview/scim/v2/ServicePrincipals/2877888790031546
+Authorization: {{old.TOKEN}}
+
+### Create a SP in new Env
+POST {{new.HOST}}/api/2.0/preview/scim/v2/ServicePrincipals
+Authorization: {{new.TOKEN}}
+Content-Type: application/json
+
+{
+  "displayName": "SP_DBR",
+  "entitlements": [
+    {
+      "display": "testgroup-sp",
+      "type": "direct",
+      "value": "420181724190573",
+      "$ref": "Groups/420181724190573"
+    }
+  ],
+  "id": "2877888790031546",
+  "applicationId": "b8c569a2-cbc4-4ee4-9661-9b4b88f9c071",
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
+  ],
+  "active": true
+}

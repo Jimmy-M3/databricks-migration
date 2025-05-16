@@ -1,0 +1,68 @@
+### Step 1: Get Jobs List
+GET {{old.HOST}}/api/2.0/jobs/list
+Authorization: {{old.TOKEN}}
+
+### Step 1.1: Get a Single Job
+GET {{old.HOST}}/api/2.1/jobs/get
+Authorization: {{old.TOKEN}}
+Content-Type: application/json
+
+{
+  "job_id": "1061320209832322"
+}
+
+### TEST: Create A Job use response result
+POST {{old.HOST}}/api/2.1/jobs/create
+Authorization: {{old.TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "demojob-22",
+  "notification_settings": {
+      "no_alert_for_skipped_runs": false
+    },
+  "timeout_seconds": 0,
+  "max_concurrent_runs": 1,
+  "run_as":{
+    "user_name": "admin@holian.partner.onmschina.cn"
+  },
+    "tasks": [
+      {
+        "task_key": "test22",
+        "run_if": "ALL_SUCCESS",
+        "notebook_task": {
+          "notebook_path": "/Workspace/Test/nb_2",
+          "source": "WORKSPACE"
+        },
+        "job_cluster_key": "Job_cluster",
+        "timeout_seconds": 0,
+        "email_notifications": {}
+      }
+    ],
+    "job_clusters": [
+      {
+        "job_cluster_key": "Job_cluster",
+        "new_cluster": {
+          "spark_version": "12.2.x-scala2.12",
+          "azure_attributes": {
+            "first_on_demand": 1,
+            "availability": "ON_DEMAND_AZURE",
+            "spot_bid_max_price": -1.0
+          },
+          "node_type_id": "Standard_D4ds_v5",
+          "spark_env_vars": {
+            "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+          },
+          "enable_elastic_disk": true,
+          "data_security_mode": "LEGACY_SINGLE_USER_STANDARD",
+          "runtime_engine": "PHOTON",
+          "num_workers": 8
+        }
+      }
+    ],
+    "format": "MULTI_TASK",
+    "queue": {
+      "enabled": true
+    }
+
+}
