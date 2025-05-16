@@ -141,15 +141,15 @@ elif args.acl_sp:
     account_id_target = account_id_source
     account_token_target = account_token_source
     print("start migation acl servicePrincipals..."+"at:"+str(datetime.now()))
-    group_sp_permissions.call_migratoin_group_sp_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,account_id_source=account_id_source,account_id_target=account_id_target,type="servicePrincipals")
+    group_sp_permissions.call_migratoin_group_sp_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,account_id_source=account_id_source,account_id_target=account_id_target,type="servicePrincipals",args=args)
     print("completed migation servicePrincipals..."+"at:"+str(datetime.now()))    
 elif args.catalog:
     print("start migation catalog/schema/table and permissions..."+"at:"+str(datetime.now()))
-    catalog_permissions.call_migration_catalog_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target)
+    catalog_permissions.call_migration_catalog_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,args=args)
     print("completed catalog/schema/table and permissions..."+"at:"+str(datetime.now()))
 elif args.libs:
     print("start migration libs..."+"at:"+str(datetime.now()))
-    m_libs.call_migration_cluster_libs(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target)
+    m_libs.call_migration_cluster_libs(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,args=args)
     print("completed migration libs..."+"at:"+str(datetime.now())) 
 elif args.files:
     print("start migration files..."+"at:"+str(datetime.now()))
@@ -157,22 +157,22 @@ elif args.files:
     print("completed migration files..."+"at:"+str(datetime.now()) )   
 elif args.dashboards:
     print("start migration dashboards..."+"at:"+str(datetime.now()))
-    extwk.call_exportworkspace(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,filetye="DASHBOARD")
+    extwk.call_exportworkspace(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,args=args,filetye="DASHBOARD")
     print("completed migration dashboards..."+"at:"+str(datetime.now()) )
 elif args.acl_dashboards:
     print("start migration acl_dashboards..."+"at:"+str(datetime.now()))
-    dash_permissions.call_migration_acl_dashboard(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target)
+    dash_permissions.call_migration_acl_dashboard(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,args=args)
     print("completed migration acl_dashboards..."+"at:"+str(datetime.now()))    
 elif args.notebooks:
     print(f"start migration notebooks..."+"at:"+str(datetime.now()))
-    extwk.call_exportworkspace(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,filetye="NOTEBOOK")
+    extwk.call_exportworkspace(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,args=args,filetye="NOTEBOOK")
     print(f"completed migration notebooks..."+"at:"+str(datetime.now()))       
     print(f"start migration notebooks permissions..."+"at:"+str(datetime.now()))
     notebook_permissions.call_migration_acl_notebook(target_host=_databricks_domain_target,target_token=_access_token_target)
     print(f"completed migration notebooks permissions..."+"at:"+str(datetime.now()))
 elif args.acl_pool:
     print("start migation pools 's permissions..."+"at:"+str(datetime.now()))
-    pool_permissions.call_migratoin_pool_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target)
+    pool_permissions.call_migratoin_pool_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,args=args)
     print("completed pools 's permissions..."+"at:"+str(datetime.now()))            
 else:
     # 如果没有参数，提示用户输入参数
