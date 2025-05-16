@@ -89,42 +89,6 @@ parser.add_argument('--notebooks', action='store_true',
 parser.add_argument('--acl_pool', action='store_true',
                     help='Run migration pools''s permissions... ')
 
-#解析参数
-# databricks_domain = ""
-# access_token = ""
-# _databricks_domain_target = ""
-# _access_token_target = ""
-# account_id_source = ""
-# account_token_source = ""
-# account_id_target  = ""
-# account_token_target = ""
-# script_dir = os.path.dirname(os.path.abspath(__file__))
-# file_path = os.path.join(script_dir, 'config.txt')
-# with open(file_path, 'r') as file:
-#     config_lines = file.readlines()
-#     for line in config_lines:
-#         parts = line.strip().split('=', 1)
-#         if len(parts) == 2:
-#             key, value = parts
-#             key = key.strip()
-#             value = value.strip()
-#             if key == 'databricks_domain':
-#                 databricks_domain = value
-#             if key == 'access_token':
-#                 access_token = value
-#             if key == 'target_databricks_domain':
-#                 _databricks_domain_target = value
-#             if key == 'target_access_token':
-#                 _access_token_target = value
-#             if key == 'account_id_source':
-#                 account_id_source = value
-#             if key == 'account_token_source':
-#                 account_token_source = value
-#             if key == 'account_id_target':
-#                 account_id_target = value
-#             if key == 'account_token_target':
-#                 account_token_target = value
-#                 break
 args = parser.parse_args()
 old_ws_login_credentials = get_login_credentials(profile=args.profile_of_oldWS)
 new_ws_login_credentials = get_login_credentials(profile=args.profile_of_newWS)
@@ -132,11 +96,11 @@ databricks_domain = old_ws_login_credentials['host']
 access_token = old_ws_login_credentials['token']
 _databricks_domain_target = new_ws_login_credentials['host']
 _access_token_target = new_ws_login_credentials['token']
-account_login_credentials = get_login_credentials(profile='ACCOUNT')
-account_id_source = account_login_credentials['account_id']
-account_token_source = account_login_credentials['token']
-account_id_target  = account_id_source
-account_token_target = account_token_source
+# account_login_credentials = get_login_credentials(profile='ACCOUNT')
+# account_id_source = account_login_credentials['account_id']
+# account_token_source = account_login_credentials['token']
+# account_id_target  = account_id_source
+# account_token_target = account_token_source
 
 print("Load Credentials Successful")
 # 根据参数执行相应的功能
@@ -162,10 +126,20 @@ elif args.query:
     query_permissions.call_migration_acl_query(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target)
     print("completed query..."+"at:"+str(datetime.now()))
 elif args.acl_group:
+    account_login_credentials = get_login_credentials(profile='ACCOUNT')
+    account_id_source = account_login_credentials['account_id']
+    account_token_source = account_login_credentials['token']
+    account_id_target = account_id_source
+    account_token_target = account_token_source
     print("start migation acl group ..."+"at:"+str(datetime.now()))
     group_sp_permissions.call_migratoin_group_sp_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,account_id_source=account_id_source,account_id_target=account_id_target,type="groups")
     print("completed migation group ..."+"at:"+str(datetime.now()))
 elif args.acl_sp:
+    account_login_credentials = get_login_credentials(profile='ACCOUNT')
+    account_id_source = account_login_credentials['account_id']
+    account_token_source = account_login_credentials['token']
+    account_id_target = account_id_source
+    account_token_target = account_token_source
     print("start migation acl servicePrincipals..."+"at:"+str(datetime.now()))
     group_sp_permissions.call_migratoin_group_sp_permissions(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,account_id_source=account_id_source,account_id_target=account_id_target,type="servicePrincipals")
     print("completed migation servicePrincipals..."+"at:"+str(datetime.now()))    
