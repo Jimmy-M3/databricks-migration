@@ -193,7 +193,7 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
                                 file_data.extend(filterfile)
                                 # trans_download_upload(soure_host=databricks_host,source_token=token,target_host=databricks_host_t,target_token=token_t ,filtered_list=filterfile,filetype=filetye)
                             if len(DIRECTORY) >=1:
-                                with concurrent.futures.ThreadPoolExecutor(max_workers=15) as executor:
+                                with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                                     results_ = list(executor.map(
                                                 lambda path: export_workspace(databricks_host, token, path),DIRECTORY
                                             ))     
