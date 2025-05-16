@@ -2,7 +2,7 @@ import requests
 import json
 import os
 
-from modify_log.modify_query_id import old_id
+#from modify_log.modify_query_id import old_id
 
 # 替换为你的Databricks域名、访问令牌和版本号
 # databricks_domain = ""
