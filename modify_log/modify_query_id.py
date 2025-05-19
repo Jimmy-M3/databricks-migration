@@ -55,8 +55,8 @@ def translate_instance_pool_attributes_toazure(log_dir):
                 # adapt spot bid price configuration to AWS syntax with 
                 # default value of 100%
                 line = re.sub(
-                    '"spot_bid_max_price": -?\d*\.?\d*',
-                    '"spot_bid_price_percent": 100',
+                    r'"spot_bid_max_price": -?\d*\.?\d*',
+                    r'"spot_bid_price_percent": 100',
                     line,
                 )
                 # update log file with new values
