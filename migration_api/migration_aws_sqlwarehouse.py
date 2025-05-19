@@ -41,7 +41,7 @@ def create_warehouse(url_target, access_token_target, warehouse_data):
         headers=headers,
         json=json.loads(warehouse_data)
     )
-    id = response.get(id)
+    # id = response.get(id)
 
     #id = data['id']
     # url_stop = f"{url_target}/{id}/stop"
