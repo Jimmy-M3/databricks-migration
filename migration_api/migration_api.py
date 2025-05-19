@@ -120,10 +120,10 @@ elif args.vectorsearch:
     print("completed vector search..."+"at:"+str(datetime.now()))
 elif args.query:
     print("start migation query..."+"at:"+str(datetime.now()))
-    query.call_migration_query(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target)
+    query.call_migration_query(source_domain=databricks_domain,source_token=access_token,domain_target=_databricks_domain_target,token_target=_access_token_target,args=args)
     print("completed query..."+"at:"+str(datetime.now()))
     print("start migration acl_query..."+"at:"+str(datetime.now()))
-    query_permissions.call_migration_acl_query(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target)
+    query_permissions.call_migration_acl_query(source_host=databricks_domain,source_token=access_token,target_host=_databricks_domain_target,target_token=_access_token_target,args=args)
     print("completed query..."+"at:"+str(datetime.now()))
 elif args.acl_group:
     account_login_credentials = get_login_credentials(profile='ACCOUNT')
