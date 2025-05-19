@@ -63,6 +63,7 @@ def trans_libs_to_newcluster(token_target,instance_target,json_data):
         retun_code =f"lib迁移成功"+ str(json_data)
     else:
         retun_code = libadd_response.text
+        print(libadd_response.json().get('message'))
     return retun_code    
                             
 
