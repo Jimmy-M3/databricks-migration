@@ -274,6 +274,7 @@ class JobsClient(ClustersClient):
                         if 'job_id' in job_conf:
                             checkpoint_job_configs_set.write(job_conf["job_id"])
                     else:
+                        print(job_settings)
                         raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
 
                 else:
