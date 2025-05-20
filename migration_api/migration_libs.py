@@ -64,6 +64,7 @@ def trans_libs_to_newcluster(token_target,instance_target,json_data):
     else:
         retun_code = libadd_response.text
         print(libadd_response.json().get('message'))
+        prin
     return retun_code    
                             
 

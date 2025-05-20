@@ -19,7 +19,7 @@ def translate_job_id_toazure(log_dir,key_value_pairs):
 key_value_pairs = {}
 file_path = "/home/ankeruser/aws/aws_workspace_config/try1/job_id_map.log"
 with open(file_path, 'r') as file:
-    json_objects = file.read().strip().split('\n')
+    json_objects = file.read().strip().split('\n')n
     for json_str in json_objects:
         try:
             json_data = json.loads(json_str)
