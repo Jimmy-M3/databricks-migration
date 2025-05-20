@@ -267,6 +267,13 @@ class JobsClient(ClustersClient):
                     else:
                         job_settings['new_cluster'] = self.get_jobs_default_cluster_conf()
                     print(job_settings)
+                    tasks = job_settings.get("tasks", [])
+                    new_tasks = []
+                    for task in tasks:
+                        if "new_cluster" in task.keys():
+                            print(task["new_cluster"])
+                            new_tasks.append(task.pop("new_cluster"))
+                    job_settings["tasks"] = new_tasks
 
                     create_resp_retry = self.post('/jobs/create', job_settings,version='2.2')
 
@@ -274,14 +281,6 @@ class JobsClient(ClustersClient):
                         if 'job_id' in job_conf:
                             checkpoint_job_configs_set.write(job_conf["job_id"])
                     else:
-                        print(job_settings)
-                        tasks = job_settings.get("tasks", [])
-                        new_tasks = []
-                        for task in tasks:
-                            if "new_cluster" in task.keys():
-                                print(task["new_cluster"])
-                                new_tasks.append(task.pop("new_cluster"))
-                        job_settings["tasks"] = new_tasks
                         print(job_settings)
                         raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
 
