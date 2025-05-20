@@ -1,6 +1,8 @@
 import json
 import os
 import logging
+from collections import deque
+
 import logging_utils
 from dbclient import *
 import wmconstants
@@ -212,11 +214,17 @@ class JobsClient(ClustersClient):
             return settings
 
         with open(jobs_log, 'r', encoding="utf-8") as fp, open(job_map_log, 'w', encoding="utf-8") as jm_fp:
-            for line in fp:
-                job_conf = json.loads(line)
-                # need to do str(...), otherwise the job_id is recognized as integer which becomes
-                # str vs int which never matches.
-                # (in which case, the checkpoint never recognizes that the job_id is already checkpointed)
+            jobs_list = fp.readlines()
+            jobs = deque(jobs_list)
+            retries = {id(job):0 for job in jobs_list}
+            completed = 0
+            max_retries = 3
+            while jobs:
+
+                job = jobs.popleft()
+                job_id = id(job)
+                job_conf = json.loads(job)
+
                 if 'job_id' in job_conf and checkpoint_job_configs_set.contains(str(job_conf['job_id'])):
                     continue
                 job_creator = job_conf.get('creator_user_name', '')
@@ -231,8 +239,7 @@ class JobsClient(ClustersClient):
                     # set all import jobs as paused
                     job_schedule_continuous['pause_status'] = "PAUSED" 
                     job_settings['continuous'] = job_schedule_continuous
-                
-                    
+
                 if 'format' not in job_settings or job_settings.get('format') == 'SINGLE_TASK':
                     adjust_ids_for_cluster(job_settings)
                 else:
@@ -283,12 +290,18 @@ class JobsClient(ClustersClient):
                         if 'job_id' in job_conf:
                             checkpoint_job_configs_set.write(job_conf["job_id"])
                     else:
-                        print(job_settings)
-                        raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
+                        retries[job_id] += 1
+                        if retries[job_id] > max_retries:
+                            print(f"Job {job_id} Failed After {max_retries} retries.")
+                        else:
+                            jobs.append(job)
+                        # raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
 
                 else:
                     if 'job_id' in job_conf:
                         checkpoint_job_configs_set.write(job_conf["job_id"])
+                    completed += 1
+                    print(f'Processed {completed}/{len(jobs_list)} jobs.')
                     _job_map = {"old_id": job_conf["job_id"], "new_id": str(create_resp["job_id"])}
                     jm_fp.write(json.dumps(_job_map) + '\n')
 
