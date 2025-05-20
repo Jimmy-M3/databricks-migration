@@ -271,7 +271,8 @@ class JobsClient(ClustersClient):
                     new_tasks = []
                     for task in tasks:
                         if "new_cluster" in task.keys():
-                            new_tasks.append(task.pop("new_cluster"))
+                            task.pop("new_cluster")
+                            new_tasks.append(task)
                         else:
                             new_tasks.append(task)
                     job_settings["tasks"] = new_tasks
