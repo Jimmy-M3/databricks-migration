@@ -271,8 +271,9 @@ class JobsClient(ClustersClient):
                     new_tasks = []
                     for task in tasks:
                         if "new_cluster" in task.keys():
-                            print(task["new_cluster"])
                             new_tasks.append(task.pop("new_cluster"))
+                        else:
+                            new_tasks.append(task)
                     job_settings["tasks"] = new_tasks
 
                     create_resp_retry = self.post('/jobs/create', job_settings,version='2.2')
