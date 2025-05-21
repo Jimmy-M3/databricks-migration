@@ -225,6 +225,7 @@ class JobsClient(ClustersClient):
             job_id_map = {}
             while jobs:
 
+                print("======================= Job  ID  MAPPING: ", job_id_map)
                 job = jobs.popleft()
                 job_id = id(job)
                 job_conf = json.loads(job)
