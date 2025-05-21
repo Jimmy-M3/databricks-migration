@@ -240,7 +240,7 @@ class JobsClient(ClustersClient):
                 job_schedule = job_settings.get('schedule', None)
 
                 tasks = job_settings.get('tasks', None)
-                for i in range(tasks):
+                for i in range(len(tasks)):
                     if 'run_job_task' in tasks[i]:
                         if 'job_id' in tasks[i]['run_job_task']:
                             try:
