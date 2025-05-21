@@ -120,22 +120,23 @@ class JobsClient(ClustersClient):
         with open(jobs_log, "w", encoding="utf-8") as log_fp, open(acl_jobs_log, 'w', encoding="utf-8") as acl_fp:
             for x in jl:
                 job_id = x['job_id']
-                single_job_response = self.get(f'/jobs/get',version='2.1',json_params={'job_id': job_id})
-                if single_job_response.get('http_status_code',None) == '200':
-                    pass
-
-                # if single_job_response.status == '200 OK':
+                # single_job_response = self.get(f'/jobs/get',version='2.1',json_params={'job_id': job_id})
+                # if single_job_response.get('http_status_code',None) == '200':
+                #     pass
+                #
+                # # if single_job_response.status == '200 OK':
                 new_job_name = x['settings']['name'] + ':::' + str(job_id)
                 # grab the settings obj
-                job_settings = single_job_response
-                job_settings.pop('http_status_code')
+                # job_settings =
+                job_settings = x['settings']
+                # job_settings.pop('http_status_code')
                 # update the job name
                 job_settings['name'] = new_job_name
-                if 'run_as_user_name' in job_settings:
-                    job_settings['run_as'] = dict(user_name=job_settings['run_as_user_name'])
-                    job_settings.pop('run_as_user_name')
-                job_settings.update(job_settings['settings'])
-                job_settings.pop('settings')
+                # if 'run_as_user_name' in job_settings:
+                #     job_settings['run_as'] = dict(user_name=job_settings['run_as_user_name'])
+                #     job_settings.pop('run_as_user_name')
+                # job_settings.update(job_settings['settings'])
+                # job_settings.pop('settings')
 
                 # reset the original struct with the new settings
                 x['settings'] = job_settings
@@ -214,16 +215,19 @@ class JobsClient(ClustersClient):
             return settings
 
         with open(jobs_log, 'r', encoding="utf-8") as fp, open(job_map_log, 'w', encoding="utf-8") as jm_fp:
-            jobs_list = fp.readlines()
-            jobs = deque(jobs_list)
-            retries = {id(job):0 for job in jobs_list}
-            completed = 0
-            max_retries = 3
-            while jobs:
+            # jobs_list = fp.readlines()
+            # jobs = deque(jobs_list)
+            # retries = {id(job):0 for job in jobs_list}
+            # completed = 0
+            # max_retries = 3
+            # while jobs:
+            #
+            #     job = jobs.popleft()
+            #     job_id = id(job)
+            #     job_conf = json.loads(job)
 
-                job = jobs.popleft()
-                job_id = id(job)
-                job_conf = json.loads(job)
+            for line in fp:
+                job_conf = json.loads(line)
 
                 if 'job_id' in job_conf and checkpoint_job_configs_set.contains(str(job_conf['job_id'])):
                     continue
@@ -235,9 +239,9 @@ class JobsClient(ClustersClient):
                     job_schedule['pause_status'] = 'PAUSED'
                     job_settings['schedule'] = job_schedule
                 job_schedule_continuous = job_settings.get("continuous", None)
-                if job_schedule_continuous: 
+                if job_schedule_continuous:
                     # set all import jobs as paused
-                    job_schedule_continuous['pause_status'] = "PAUSED" 
+                    job_schedule_continuous['pause_status'] = "PAUSED"
                     job_settings['continuous'] = job_schedule_continuous
 
                 if 'format' not in job_settings or job_settings.get('format') == 'SINGLE_TASK':
@@ -290,21 +294,20 @@ class JobsClient(ClustersClient):
                         if 'job_id' in job_conf:
                             checkpoint_job_configs_set.write(job_conf["job_id"])
                     else:
-                        retries[job_id] += 1
-                        if retries[job_id] > max_retries:
-                            print(f"Job {job_id} Failed After {max_retries} retries.")
-                        else:
-                            jobs.append(job)
-                        # raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
+                        # retries[job_id] += 1
+                        # if retries[job_id] > max_retries:
+                        #     print(f"Job {job_id} Failed After {max_retries} retries.")
+                        # else:
+                        #     jobs.append(job)
+                        raise RuntimeError("Import job has failed. Refer to the previous log messages to investigate.")
 
                 else:
                     if 'job_id' in job_conf:
                         checkpoint_job_configs_set.write(job_conf["job_id"])
-                    completed += 1
-                    print(f'Processed {completed}/{len(jobs_list)} jobs.')
+                    # completed += 1
+                    # print(f'Processed {completed}/{len(jobs_list)} jobs.')
                     _job_map = {"old_id": job_conf["job_id"], "new_id": str(create_resp["job_id"])}
                     jm_fp.write(json.dumps(_job_map) + '\n')
-
 
         # update the jobs with their ACLs
         with open(acl_jobs_log, 'r', encoding="utf-8") as acl_fp:
@@ -315,7 +318,7 @@ class JobsClient(ClustersClient):
                 print(acl_conf)
                 if 'object_id' in acl_conf and checkpoint_job_configs_set.contains(acl_conf['object_id']):
                     continue
-                current_job_id = job_id_by_name[acl_conf['job_name'].split(':::')[1]]
+                current_job_id = job_id_by_name[acl_conf['job_name']]
                 job_path = f'jobs/{current_job_id}'  # contains `/jobs/{job_id}` path
                 api = f'/preview/permissions/{job_path}'
                 # get acl permissions for jobs
@@ -341,7 +344,7 @@ class JobsClient(ClustersClient):
             raise ValueError('Jobs log and jobs id map must exist to map jobs to previous existing jobs ids')
 
         job_map_log = self._load_job_id_map(job_map_file)
-        
+
         with open(log_file, 'r', encoding="utf-8") as fp:
             for line in fp:
                 job_conf = json.loads(line)
