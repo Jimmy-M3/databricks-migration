@@ -213,11 +213,6 @@ class JobsClient(ClustersClient):
                     new_cluster_conf = cluster_conf
                 settings['new_cluster'] = new_cluster_conf
 
-            run_job_task = settings.get('run_job_task',None)
-
-            if run_job_task and 'job_id' in run_job_task:
-                run_job_task['job_id'] = job_id_map[run_job_task['job_id']]
-            settings['run_job_task'] = run_job_task
 
             return settings
 
@@ -242,6 +237,16 @@ class JobsClient(ClustersClient):
                 job_creator = job_conf.get('creator_user_name', '')
                 job_settings = job_conf['settings']
                 job_schedule = job_settings.get('schedule', None)
+
+                run_job_task = job_settings.get('run_job_task', None)
+                if run_job_task and 'job_id' in run_job_task:
+                    try:
+                        run_job_task['job_id'] = job_id_map[run_job_task['job_id']]
+                    except KeyError:
+                        continue
+
+                job_settings['run_job_task'] = run_job_task
+
                 if job_schedule:
                     # set all imported jobs as paused
                     job_schedule['pause_status'] = 'PAUSED'
@@ -251,6 +256,8 @@ class JobsClient(ClustersClient):
                     # set all import jobs as paused
                     job_schedule_continuous['pause_status'] = "PAUSED"
                     job_settings['continuous'] = job_schedule_continuous
+
+
 
                 if 'format' not in job_settings or job_settings.get('format') == 'SINGLE_TASK':
                     adjust_ids_for_cluster(job_settings)
