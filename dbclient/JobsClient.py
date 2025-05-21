@@ -244,7 +244,7 @@ class JobsClient(ClustersClient):
                     if 'run_job_task' in tasks[i]:
                         if 'job_id' in tasks[i]['run_job_task']:
                             try:
-                                tasks[i]['run_job_task']['job_id'] = job_id_map[task[i]['run_job_task']['job_id']]
+                                tasks[i]['run_job_task']['job_id'] = job_id_map[tasks[i]['run_job_task']['job_id']]
                             except KeyError:
                                 continue
                         else:
