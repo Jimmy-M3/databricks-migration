@@ -283,7 +283,7 @@ class JobsClient(ClustersClient):
                         else:
                             new_tasks.append(task)
                     job_settings["tasks"] = new_tasks
-
+                    print("=============================================  Create Job retry by modifying cluster setting  ===============================================")
                     create_resp_retry = self.post('/jobs/create', job_settings,version='2.2')
 
                     if not logging_utils.log_response_error(error_logger, create_resp_retry):
