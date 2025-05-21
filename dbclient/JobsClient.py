@@ -317,6 +317,7 @@ class JobsClient(ClustersClient):
                 print(acl_conf)
                 if 'object_id' in acl_conf and checkpoint_job_configs_set.contains(acl_conf['object_id']):
                     continue
+                print(f"====================  {acl_conf['job_name']}  ===================")
                 current_job_id = job_id_by_name[acl_conf['job_name']]
                 job_path = f'jobs/{current_job_id}'  # contains `/jobs/{job_id}` path
                 api = f'/preview/permissions/{job_path}'
