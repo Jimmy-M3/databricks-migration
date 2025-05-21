@@ -214,8 +214,13 @@ class JobsClient(ClustersClient):
                 settings['new_cluster'] = new_cluster_conf
 
             run_job_task = settings.get('run_job_task',None)
+
+            id_mapping = {}
+            for item in _job_map:
+                id_mapping[item['old_id']] = item['new_id']
+
             if run_job_task and 'job_id' in run_job_task:
-                run_job_task['job_id'] = _job_map[run_job_task['job_id']]
+                run_job_task['job_id'] = id_mapping[run_job_task['job_id']]
             settings['run_job_task'] = run_job_task
 
             return settings
