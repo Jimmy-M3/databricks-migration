@@ -239,14 +239,22 @@ class JobsClient(ClustersClient):
                 job_settings = job_conf['settings']
                 job_schedule = job_settings.get('schedule', None)
 
-                run_job_task = job_settings.get('run_job_task', None)
-                if run_job_task and 'job_id' in run_job_task:
-                    try:
-                        run_job_task['job_id'] = job_id_map[run_job_task['job_id']]
-                    except KeyError:
+                tasks = job_settings.get('tasks', None)
+                for i in range(tasks):
+                    if 'run_job_task' in tasks[i]:
+                        if 'job_id' in tasks[i]['run_job_task']:
+                            try:
+                                tasks[i]['run_job_task']['job_id'] = job_id_map[task[i]['run_job_task']['job_id']]
+                            except KeyError:
+                                continue
+                        else:
+                            continue
+                    else:
                         continue
 
-                job_settings['run_job_task'] = run_job_task
+
+
+                job_settings['tasks'] = tasks
 
                 if job_schedule:
                     # set all imported jobs as paused
