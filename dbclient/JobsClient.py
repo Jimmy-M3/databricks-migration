@@ -215,12 +215,8 @@ class JobsClient(ClustersClient):
 
             run_job_task = settings.get('run_job_task',None)
 
-            id_mapping = {}
-            for item in _job_map:
-                id_mapping[item['old_id']] = item['new_id']
-
             if run_job_task and 'job_id' in run_job_task:
-                run_job_task['job_id'] = id_mapping[run_job_task['job_id']]
+                run_job_task['job_id'] = job_id_map[run_job_task['job_id']]
             settings['run_job_task'] = run_job_task
 
             return settings
@@ -231,6 +227,7 @@ class JobsClient(ClustersClient):
             retries = {id(job):0 for job in jobs_list}
             completed = 0
             max_retries = 3
+            job_id_map = {}
             while jobs:
 
                 job = jobs.popleft()
@@ -317,6 +314,7 @@ class JobsClient(ClustersClient):
                     completed += 1
                     print(f'Processed {completed}/{len(jobs_list)} jobs.')
                     _job_map = {"old_id": job_conf["job_id"], "new_id": str(create_resp["job_id"])}
+                    job_id_map[job_conf["job_id"]]=str(create_resp["job_id"])
                     jm_fp.write(json.dumps(_job_map) + '\n')
 
         # update the jobs with their ACLs
