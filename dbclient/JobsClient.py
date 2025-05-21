@@ -212,6 +212,12 @@ class JobsClient(ClustersClient):
                 else:
                     new_cluster_conf = cluster_conf
                 settings['new_cluster'] = new_cluster_conf
+
+            run_job_task = settings.get('run_job_task',None)
+            if 'job_id' in run_job_task:
+                run_job_task['job_id'] = _job_map[run_job_task['job_id']]
+            settings['run_job_task'] = run_job_task
+
             return settings
 
         with open(jobs_log, 'r', encoding="utf-8") as fp, open(job_map_log, 'w', encoding="utf-8") as jm_fp:
