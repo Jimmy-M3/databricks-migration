@@ -121,7 +121,7 @@ class JobsClient(ClustersClient):
             for x in jl:
                 job_id = x['job_id']
                 single_job_response = self.get(f'/jobs/get',version='2.1',json_params={'job_id': job_id})
-                detail_settings = single_job_response.json().get('settings')
+                detail_settings = single_job_response.get('settings')
                 # if single_job_response.get('http_status_code',None) == '200':
                 #     pass
                 #
