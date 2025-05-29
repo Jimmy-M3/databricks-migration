@@ -120,15 +120,16 @@ class JobsClient(ClustersClient):
         with open(jobs_log, "w", encoding="utf-8") as log_fp, open(acl_jobs_log, 'w', encoding="utf-8") as acl_fp:
             for x in jl:
                 job_id = x['job_id']
-                # single_job_response = self.get(f'/jobs/get',version='2.1',json_params={'job_id': job_id})
+                single_job_response = self.get(f'/jobs/get',version='2.1',json_params={'job_id': job_id})
+                detail_settings = single_job_response.json().get('settings')
                 # if single_job_response.get('http_status_code',None) == '200':
                 #     pass
                 #
                 # # if single_job_response.status == '200 OK':
                 new_job_name = x['settings']['name'] + ':::' + str(job_id)
                 # grab the settings obj
-                # job_settings =
-                job_settings = x['settings']
+                job_settings = detail_settings
+                # job_settings = x['settings']
                 # job_settings.pop('http_status_code')
                 # update the job name
                 job_settings['name'] = new_job_name
