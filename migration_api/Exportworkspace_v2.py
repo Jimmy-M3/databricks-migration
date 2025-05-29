@@ -206,16 +206,12 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
     export_dir = args.set_export_dir
     if filetye.lower()=="notebook": 
         acl_path = os.path.join(export_dir, f'{args.session}/acl_notebooks.log')
-            # f"/home/lorealuser/Jimmy/cn3_01/try2/acl_notebooks.log"
 
         workspace_path =os.path.join(export_dir, f'{args.session}/user_workspace.log')
-        # "/home/lorealuser/Jimmy/cn3_01/try2/user_workspace.log"
     else:
         acl_path =os.path.join(export_dir, f'{args.session}/acl_{filetye.lower()}.log')
-        # f"//home/lorealuser/Jimmy/cn3_01/try2/acl_{filetye.lower()}.log"
         workspace_path =os.path.join(export_dir, f'{args.session}/{filetye.lower()}.log')
-        # f"/home/lorealuser/Jimmy/cn3_01/try2/{filetye.lower()}.log"
-        
+
     
     with open(acl_path, 'w') as aclfile:
         with open(workspace_path, 'w') as wsfile:
@@ -227,8 +223,3 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
                     aclfile.write(str(json.dumps(alc_list)).replace('anker.com','anker-in.com')+"\n")
                 wsfile.write(str(json.dumps(data)).replace('anker.com','anker-in.com')+"\n")          
                 trans_download_upload(soure_host=databricks_host,source_token=token,target_host=databricks_host_t,target_token=token_t ,filtered_list=data,filetype=filetye,args=args)
-                                    
-# call_exportworkspace(source_host="https://dbc-1c15bce2-47da.cloud.databricks.com",source_token="dapif68be4994c246f0cb09c54e1faa337dc",
-#                      target_host="https://adb-4145924773612620.0.azuredatabricks.net",target_token="dapic4097acb93f44191d25257cb8127c038",filetye="NOTEBOOK")     
-            
-          

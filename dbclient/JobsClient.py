@@ -238,7 +238,7 @@ class JobsClient(ClustersClient):
                 job_creator = job_conf.get('creator_user_name', '')
                 job_settings = job_conf['settings']
                 job_schedule = job_settings.get('schedule', None)
-
+                job_settings['name'] = job_settings['name'].split(':::')[0]
                 tasks = job_settings.get('tasks', None)
                 if tasks:
                     for i in range(len(tasks)):
