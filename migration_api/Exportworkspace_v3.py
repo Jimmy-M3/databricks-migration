@@ -1,3 +1,5 @@
+import resource
+
 import requests
 import os
 import base64
@@ -5,6 +7,9 @@ import urllib.parse
 import json
 import concurrent.futures
 from datetime import datetime
+from databricks.sdk import WorkspaceClient
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 def get_ws_acls(obj_id,obj_type,_domain,_token):
     """
@@ -66,12 +71,23 @@ def upload_file(databricks_host_, token_,in_args):
         "Content-Type": "application/json"
     }
     url_1 = f"{databricks_host_}/api/2.0/workspace/import"
-    params =  json.loads(json.dumps(in_args).replace('anker.com','anker-in.com'))
+    params =  json.loads(json.dumps(in_args))
     
     response = requests.post(url_1, headers=headers,json= params)
     if response.status_code == 200:
         return response
+
     else:
+        try:
+            ws = WorkspaceClient(host = databricks_host_,token=token_)
+            ws.workspace.mkdirs(path = os.path.dirname(params.get('path')))
+            response = requests.post(url_1, headers=headers, json=params)
+            if response.status_code == 200:
+                return response
+
+        except Exception as e:
+            print(f"Failed to import file: {e}")
+
         print(f"Failed to import file: {response.status_code} - {response.text}")
         return None
 def upload_mkdir(databricks_host_, token_,in_args):
@@ -83,7 +99,8 @@ def upload_mkdir(databricks_host_, token_,in_args):
     params =  {
          "path": in_args
     }
-    response = requests.post(url_1, headers=headers,params= params)
+
+    response = requests.post(url_1, headers=headers,params= {"path": in_args})
     if response.status_code == 200:
         return response
     else:
@@ -188,10 +205,5 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
         for sub_folder in sub_folder_list:
             recursive_export_objects(sub_folder.get('path'),acl_file,wsfile)
 
-
-
-
-
-    
     with open(acl_path, 'w') as aclfile, open(workspace_path, 'w') as wsfile:
         recursive_export_objects(export_path,aclfile,wsfile)
