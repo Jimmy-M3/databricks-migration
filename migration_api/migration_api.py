@@ -14,7 +14,7 @@ import migration_aws_dlt as dlt
 import migration_catalog_permissions as catalog_permissions
 import disabled_dataflow as disable_dataflow
 import migration_libs as m_libs
-import Exportworkspace_v2 as extwk
+import Exportworkspace_v3 as extwk
 import migration_aws_group_sp_permissions as group_sp_permissions
 import argparse
 import sys
