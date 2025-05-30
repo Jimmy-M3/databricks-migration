@@ -116,21 +116,17 @@ def trans_download_upload(soure_host,source_token,target_host,target_token,filte
     file = filtered_list
     # for file in filtered_list:
     path = file.get('path').rstrip('\n')
-    #save_file_path = script_dir+"/log/"+os.path.dirname(path)
-    #save_file_path = '/home/ankeruser/aws/aws_workspace_config/try1/artifacts/'+os.path.dirname(path).replace('anker.com','anker-in.com')
+
     export_dir = args.set_export_dir
     save_file_path = os.path.join(export_dir, f'{args.session}_api/artifacts/')+os.path.dirname(path)
-    # save_file_path = '/home/ankeruser/aws/aws_workspace_config/try1_api/artifacts/'+os.path.dirname(path).replace('anker.com','anker-in.com')
     if not os.path.exists(save_file_path):
         os.makedirs(save_file_path)
         print(f"Directory created: {save_file_path}")
     resp=download_file(databricks_host, token,path)
     if "10485760" not in resp:
-        #filename=urllib.parse.quote(str(os.path.basename(path)))
         filename = os.path.basename(path)
         print(filename)
         save_filename = save_file_path.replace('anker.com','anker-in.com')+"/" +filename
-        #save_filename = urllib.parse.quote(str(os.path.basename(path)))
         #写文件
         if 'ads_search_term_11' not in save_filename:
             if 'bi_ap_kk_invoices__view_rename_1' not in save_filename:
@@ -163,36 +159,23 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
     token = source_token
     databricks_host_t =target_host
     token_t = target_token
-    export_path = "/"
-    export_paths=[]
-    file_data =[]
-
-    def recursive_export_objects(current_path:str,objects_total_list:list):
-        objects_in_current_path = export_workspace(databricks_host, token,current_path)
-        sub_folder_list = filter_workspace_items(objects_in_current_path, 'DIRECTORY')
-        objects_list = filter_workspace_items(objects_in_current_path, filetye)
-        objects_total_list.extend(objects_list)
-        for sub_folder in sub_folder_list:
-            objects_in_subfolder = recursive_export_objects(sub_folder.get('path'),objects_total_list)
-            objects_total_list.extend(objects_in_subfolder)
-
-        return objects_total_list
-
     export_dir = args.set_export_dir
 
-    file_data = recursive_export_objects(export_path,[])
-
-    if filetye.lower()=="notebook": 
+    if filetye.lower()=="notebook":
         acl_path = os.path.join(export_dir, f'{args.session}/acl_notebooks.log')
 
         workspace_path =os.path.join(export_dir, f'{args.session}/user_workspace.log')
     else:
         acl_path =os.path.join(export_dir, f'{args.session}/acl_{filetye.lower()}.log')
         workspace_path =os.path.join(export_dir, f'{args.session}/{filetye.lower()}.log')
+    export_path = "/"
 
-    
-    with open(acl_path, 'w') as aclfile, open(workspace_path, 'w') as wsfile:
-        for data in file_data:
+
+    def recursive_export_objects(current_path:str,acl_file,wsfile):
+        objects_in_current_path = export_workspace(databricks_host, token,current_path)
+        sub_folder_list = filter_workspace_items(objects_in_current_path, 'DIRECTORY')
+        objects_list = filter_workspace_items(objects_in_current_path, filetye)
+        for data in objects_list:
             if filetye.lower()=="notebook":
                 obj_id =data.get('object_id')
                 alc_list=get_ws_acls(obj_id,'notebooks',source_host,source_token)
@@ -200,3 +183,15 @@ def call_exportworkspace(source_host,source_token,target_host,target_token,args,
                 aclfile.write(str(json.dumps(alc_list))+"\n")
             wsfile.write(str(json.dumps(data))+"\n")
             trans_download_upload(soure_host=databricks_host,source_token=token,target_host=databricks_host_t,target_token=token_t ,filtered_list=data,filetype=filetye,args=args)
+
+        # objects_total_list.extend(objects_list)
+        for sub_folder in sub_folder_list:
+            recursive_export_objects(sub_folder.get('path'),acl_file,wsfile)
+
+
+
+
+
+    
+    with open(acl_path, 'w') as aclfile, open(workspace_path, 'w') as wsfile:
+        recursive_export_objects(export_path,aclfile,wsfile)
